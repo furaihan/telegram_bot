@@ -14,7 +14,7 @@ add name="Reboot Report" on-event=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon \
     start-time=startup
 /system script
-add name=tg_getUpdates owner=admin policy=read source=":global TGLASTMSGID\r\
+add name=tg_getUpdates  policy=read source=":global TGLASTMSGID\r\
     \n:global TGLASTUPDID\r\
     \n\r\
     \n:local fconfig [:parse [/system script get tg_config source]]\r\
@@ -119,7 +119,7 @@ add name=tg_getUpdates owner=admin policy=read source=":global TGLASTMSGID\r\
     \n:put \"Try to invoke external script tg_cmd_\$cmd\"\r\
     \n:local script [:parse [/system script get \"tg_cmd_\$cmd\" source]]\r\
     \n\$script params=\$params chatid=\$chatid from=\$name"
-add name=func_fetch owner=admin policy=ftp,read,write,policy,test source="####\
+add name=func_fetch  policy=ftp,read,write,policy,test source="####\
     #####################################################\r\
     \n# Wrapper for /tools fetch\r\
     \n#  Input:\r\
@@ -190,7 +190,7 @@ add name=func_fetch owner=admin policy=ftp,read,write,policy,test source="####\
     \n#:put \$content\r\
     \nif (\$content~\"finished\") do={:return \"success\"}\r\
     \n:return \$FETCHRESULT"
-add name=tg_getkey owner=admin policy=read source=":local cur 0\r\
+add name=tg_getkey  policy=read source=":local cur 0\r\
     \n:local lkey [:len \$key]\r\
     \n:local res \"\"\r\
     \n:local p\r\
@@ -216,7 +216,7 @@ add name=tg_getkey owner=admin policy=read source=":local cur 0\r\
     \n } \r\
     \n}\r\
     \n:return \$res"
-add name=tg_sendMessage owner=admin policy=read source=":local fconfig [:parse\
+add name=tg_sendMessage  policy=read source=":local fconfig [:parse\
     \_[/system script get tg_config source]]\r\
     \n\r\
     \n:local cfg [\$fconfig]\r\
@@ -234,7 +234,7 @@ add name=tg_sendMessage owner=admin policy=read source=":local fconfig [:parse\
     \n:local logfile (\$tgStorage.\"tg_fetch_log.txt\")\r\
     \n\r\
     \n/tool fetch url=\$url keep-result=no"
-add name=tg_cmd_cpu owner=admin policy=read source=":local send [:parse [/syst\
+add name=tg_cmd_cpu  policy=read source=":local send [:parse [/syst\
     em script get tg_sendMessage source]]\r\
     \n:local hotspot [:len [/ip hotspot active find]]\r\
     \n\r\
@@ -251,7 +251,7 @@ add name=tg_cmd_cpu owner=admin policy=read source=":local send [:parse [/syst\
     \n \r\
     \n\$send chat=\$chatid text=\$text mode=\"Markdown\"\r\
     \n:return true"
-add name=tg_cmd_public owner=admin policy=read source=":local send [:parse [/s\
+add name=tg_cmd_public  policy=read source=":local send [:parse [/s\
     ystem script get tg_sendMessage source]]\r\
     \n:put \$params\r\
     \n:put \$chatid\r\
@@ -269,7 +269,7 @@ add name=tg_cmd_public owner=admin policy=read source=":local send [:parse [/s\
     \n\r\
     \n\r\
     \n\$send chat=\$chatid text=\$text mode=\"Markdown\""
-add name=tg_cmd_ping owner=admin policy=\
+add name=tg_cmd_ping  policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=":\
     local send [:parse [/system script get tg_sendMessage source]]\r\
     \n:local param1 [:pick \$params 0 [:find \$params \" \"]]\r\
@@ -351,7 +351,7 @@ add name=tg_cmd_ping owner=admin policy=\
     \n\$send chat=\$chatid text=\$text mode=\"Markdown\"\r\
     \n:return true\r\
     \n}"
-add name=tg_cmd_disablehotspot owner=admin policy=\
+add name=tg_cmd_disablehotspot  policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=":\
     local send [:parse [/system script get tg_sendMessage source]]\r\
     \n:put \$params\r\
@@ -363,7 +363,7 @@ add name=tg_cmd_disablehotspot owner=admin policy=\
     \n\$send chat=\$chatid text=\$text mode=\"Markdown\"\r\
     \n/ip hotspot disable lantai1\r\
     \n/ip hotspot disable lantai2"
-add name=tg_cmd_enablehotspot owner=admin policy=\
+add name=tg_cmd_enablehotspot  policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=":\
     local send [:parse [/system script get tg_sendMessage source]]\r\
     \n:put \$params\r\
@@ -375,7 +375,7 @@ add name=tg_cmd_enablehotspot owner=admin policy=\
     \n\$send chat=\$chatid text=\$text mode=\"Markdown\"\r\
     \n/ip hotspot enable lantai1\r\
     \n/ip hotspot enable lantai2"
-add name=tg_cmd_forceupdateddns owner=admin policy=\
+add name=tg_cmd_forceupdateddns  policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=":\
     local send [:parse [/system script get tg_sendMessage source]]\r\
     \n:put \$params\r\
@@ -386,7 +386,7 @@ add name=tg_cmd_forceupdateddns owner=admin policy=\
     \n\r\
     \n\$send chat=\$chatid text=\$text mode=\"Markdown\"\r\
     \n/ip cloud force-update"
-add name=tg_config owner=admin policy=\
+add name=tg_config  policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source="#\
     #####################################\r\
     \n# Telegram bot API, VVS/BlackVS 2017\r\
@@ -414,7 +414,7 @@ add name=tg_config owner=admin policy=\
     \n\t\"refresh_standby\"=300;\r\
     \n}\r\
     \nreturn \$config"
-add name=tg_cmd_hotspot owner=admin policy=\
+add name=tg_cmd_hotspot  policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=":\
     local send [:parse [/system script get tg_sendMessage source]]\r\
     \n:local param1 [:pick \$params 0 [:find \$params \" \"]]\r\
@@ -521,7 +521,7 @@ add name=tg_cmd_hotspot owner=admin policy=\
     \n}\r\
     \n\$send chat=\$chatid text=(\"\$output\") mode=\"Markdown\"\r\
     \n}"
-add name=tg_cmd_start owner=admin policy=read source=":local send [:parse [/sy\
+add name=tg_cmd_start  policy=read source=":local send [:parse [/sy\
     stem script get tg_sendMessage source]]\r\
     \n\r\
     \n:put \$params\r\
@@ -559,7 +559,7 @@ add name=tg_cmd_start owner=admin policy=read source=":local send [:parse [/sy\
     \n \r\
     \n\$send chat=\$chatid text=\$text mode=\"Markdown\"\r\
     \n:return true"
-add name=tg_cmd_interface owner=admin policy=read source=":local send [:parse \
+add name=tg_cmd_interface  policy=read source=":local send [:parse \
     [/system script get tg_sendMessage source]]\r\
     \n:local param1 [:pick \$params 0 [:find \$params \" \"]]\r\
     \n:local param2 [:pick \$params ([:find \$params \" \"]+1) [:len \$params]\
@@ -617,7 +617,7 @@ add name=tg_cmd_interface owner=admin policy=read source=":local send [:parse \
     5status)\r\
     \n\t\$send chat=\$chatid text=(\"\$output\") mode=\"Markdown\"\r\
     \n}"
-add name=tg_cmd_help owner=admin policy=read source=":local send [:parse [/sys\
+add name=tg_cmd_help  policy=read source=":local send [:parse [/sys\
     tem script get tg_sendMessage source]]\r\
     \n\r\
     \n:put \$params\r\
@@ -655,7 +655,7 @@ add name=tg_cmd_help owner=admin policy=read source=":local send [:parse [/sys\
     \n \r\
     \n\$send chat=\$chatid text=\$text mode=\"Markdown\"\r\
     \n:return true"
-add name=tg_cmd_hi owner=admin policy=read source=":local send [:parse [/syste\
+add name=tg_cmd_hi  policy=read source=":local send [:parse [/syste\
     m script get tg_sendMessage source]]\r\
     \n\r\
     \n:put \$params\r\
@@ -693,7 +693,7 @@ add name=tg_cmd_hi owner=admin policy=read source=":local send [:parse [/syste\
     \n \r\
     \n\$send chat=\$chatid text=\$text mode=\"Markdown\"\r\
     \n:return true"
-add name=reboot-report owner=admin policy=\
+add name=reboot-report  policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=":\
     local send [:parse [/system script get tg_sendMessage source]]\r\
     \n:put \$params\r\
@@ -741,7 +741,7 @@ add name=reboot-report owner=admin policy=\
     \n \r\
     \n:set reportBody (\$reportBody . \"%0A=== end of report ===%0A\")\r\
     \n\$send chat=\$chatid text=\$reportBody mode=\"Markdown\""
-add name=tg_cmd_reboot owner=admin policy=\
+add name=tg_cmd_reboot  policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=":\
     local send [:parse [/system script get tg_sendMessage source]]\r\
     \n:put \$params\r\
@@ -754,3 +754,5 @@ add name=tg_cmd_reboot owner=admin policy=\
     \n\r\
     \n:delay 30\r\
     \nsystem reboot"
+add name=tg_cmd_ppp policy=\
+    ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=([/tool fetch http-method=get mode=https url="https://raw.githubusercontent.com/furaihan/telegram_bot/master/script%20text/tg_cmd_ppp" as-value output=user]->"data")
