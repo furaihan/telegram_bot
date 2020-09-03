@@ -15,7 +15,7 @@
 :put $chatid
 :put $from
 
-:if (param1 = "lease") do={
+:if (params = "lease") do={
 	local GetMacVendor do={
 		:do {
 			return ([/tool fetch mode=https http-method=get url=("https://api.macvendors.com/".[:pick [:tostr $1] 0 8 ]) as-value output=user ]->"data")
@@ -24,11 +24,23 @@
 		}
 	}
 	local text
-	set text ("*DHCP LEASE REPORT*%0A%0A")
+	local number (0)
+	set text ("*Router ID: ".[/system identity get value-name=name]."*%0A%0A")
 	foreach i in=[/ip dhcp-server lease find] do={
-		local addr [/ip dhcp-server lease get value-name=address]
-		set text ($text."IP Address : $addr%0A")
-		local mac [/ip dhcp-server lease get value-name=mac-address]
+		set number ($number + 1)
+		set text ($text."======== \F0\9F\97\82 DHCP LEASE REPORT ($number) \F0\9F\97\82 ========%0A")
+		local addr [/ip dhcp-server lease get value-name=address $i]
+		set text ($text."IP Address: $addr%0A")
+		local mac [/ip dhcp-server lease get value-name=mac-address $i]
 		local macvendor [$GetMacVendor $mac]
-		put $macvendor
-		
+		set text ($text."Mac Address: $mac%0A")
+		set text ($text."Mac Vendor: $macvendor%0A")
+		local host [/ip dhcp-server lease get value-name=host-name $i]
+		if ([:typeof $host] = "nil") do={set host ("Unknown Hostname")}
+		set text ($text."Hostname: $$host%0A")
+		local lastseen [/ip dhcp-server lease get value-name=last-seen $i]
+		set text ($text."Uptime: $lastseen%0A")
+	}
+	set text ($text."============ END REPORT ============%0A")
+	$send chat=$chatid text=("$text") mode="Markdown"
+}
