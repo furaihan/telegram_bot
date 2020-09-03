@@ -559,64 +559,6 @@ add name=tg_cmd_start  policy=read source=":local send [:parse [/sy\
     \n \r\
     \n\$send chat=\$chatid text=\$text mode=\"Markdown\"\r\
     \n:return true"
-add name=tg_cmd_interface  policy=read source=":local send [:parse \
-    [/system script get tg_sendMessage source]]\r\
-    \n:local param1 [:pick \$params 0 [:find \$params \" \"]]\r\
-    \n:local param2 [:pick \$params ([:find \$params \" \"]+1) [:len \$params]\
-    ]\r\
-    \n:local param3 [:pick [:pick \$params ([:find \$params \" \"]+1) [:len \$\
-    params]] ([:find [:pick \$params ([:find \$params \" \"]+1) [:len \$params\
-    ]] \" \"]+1) [:len [:pick \$params ([:find \$params \" \"]+1) [:len \$para\
-    ms]]]]\r\
-    \n:if ([:len [:find \$param2 \" \"]]>0) do={\r\
-    \n\t:set param2 [:pick [:pick \$params ([:find \$params \" \"]+1) [:len \$\
-    params]] 0 [:find [:pick \$params ([:find \$params \" \"]+1) [:len \$param\
-    s]] \" \"]]\r\
-    \n} else={\r\
-    \n\t:set param3 \"\"\r\
-    \n}\r\
-    \n\r\
-    \n:put \$params\r\
-    \n:put \$param1\r\
-    \n:put \$param2\r\
-    \n:put \$param3\r\
-    \n:put \$chatid\r\
-    \n:put \$from\r\
-    \n\r\
-    \n:if (\$params=\"show\") do={\r\
-    \n\t:local output \"Router ID:* \$[/system identity get name] * %0A%0A\"\r\
-    \n\t:local eth01status\r\
-    \n\t:local eth03status\r\
-    \n\t:local eth04status\r\
-    \n\t:local eth05status\r\
-    \n\r\
-    \n\t:if ([/interface ethernet get eth01-router running]=true) do={\r\
-    \n\t\t:set eth01status (\"Internet is *CONNECTED*%0A\")\r\
-    \n\t} else={\r\
-    \n\t\t:set eth01status (\"Internet is *DISCONNECTED*%0A\")\r\
-    \n\t}\r\
-    \n\r\
-    \n\t:if ([/interface ethernet get eth03-lantai-1 running]=true) do={\r\
-    \n\t\t:set eth03status (\"Lantai 1 is *CONNECTED*%0A\")\r\
-    \n\t} else={\r\
-    \n\t\t:set eth03status (\"Lantai 1 is *DISCONNECTED*%0A\")\r\
-    \n\t}\r\
-    \n\r\
-    \n\t:if ([/interface ethernet get eth04-lantai-2 running]=true) do={\r\
-    \n\t\t:set eth04status (\"Lantai 2 is *CONNECTED*%0A\")\r\
-    \n\t} else={\r\
-    \n\t\t:set eth04status (\"Lantai 2 is *DISCONNECTED*%0A\")\r\
-    \n\t}\r\
-    \n\r\
-    \n\t:if ([/interface ethernet get eth05-configurator running]=true) do={\r\
-    \n\t\t:set eth05status (\"Config is *CONNECTED*%0A\")\r\
-    \n\t} else={\r\
-    \n\t\t:set eth05status (\"Config is *DISCONNECTED*%0A\")\r\
-    \n\t}\r\
-    \n\t:set output (\$output.\$eth01status.\$eth03status.\$eth04status.\$eth0\
-    5status)\r\
-    \n\t\$send chat=\$chatid text=(\"\$output\") mode=\"Markdown\"\r\
-    \n}"
 add name=tg_cmd_help  policy=read source=":local send [:parse [/sys\
     tem script get tg_sendMessage source]]\r\
     \n\r\
@@ -755,4 +697,8 @@ add name=tg_cmd_reboot  policy=\
     \n:delay 30\r\
     \nsystem reboot"
 add name=tg_cmd_ppp policy=\
-    ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=([/tool fetch http-method=get mode=https url="https://raw.githubusercontent.com/furaihan/telegram_bot/master/script%20text/tg_cmd_ppp" as-value output=user]->"data")
+    ftp,read,write,policy,test,password,sniff,sensitive,romon source=([/tool fetch http-method=get mode=https url="https://raw.githubusercontent.com/furaihan/telegram_bot/master/script%20text/tg_cmd_ppp" as-value output=user]->"data")
+add name=tg_cmd_dhcp policy=\
+    ftp,read,write,policy,test,password,sniff,sensitive,romon source=([/tool fetch http-method=get mode=https url="https://raw.githubusercontent.com/furaihan/telegram_bot/master/script%20text/tg_cmd_dhcp" as-value output=user]->"data")
+add name=tg_cmd_interface policy=\
+    ftp,read,write,policy,test,password,sniff,sensitive,romon source=([/tool fetch http-method=get mode=https url="https://raw.githubusercontent.com/furaihan/telegram_bot/master/script%20text/tg_cmd_interface" as-value output=user]->"data")
