@@ -28,7 +28,7 @@
 	set text ("*Router ID: ".[/system identity get value-name=name]."*%0A%0A")
 	foreach i in=[/ip dhcp-server lease find] do={
 		set number ($number + 1)
-		set text ($text."======== \F0\9F\97\82 DHCP LEASE REPORT ($number) \F0\9F\97\82 ========%0A")
+		set text ($text."======== \F0\9F\97\82 DHCP LEASE ($number) \F0\9F\97\82 ========%0A")
 		local addr [/ip dhcp-server lease get value-name=address $i]
 		set text ($text."IP Address: $addr%0A")
 		local mac [/ip dhcp-server lease get value-name=mac-address $i]
