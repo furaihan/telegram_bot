@@ -15,8 +15,8 @@
 :put $chatid
 :put $from
 
-:local ConvertLowerCase do={
-	:local alphabet {"A"="a";"B"="b";"C"="c";"D"="d";"E"="e";"F"="f";"G"="g";"H"="h";"I"="i";"J"="j";"K"="k";"L"="l";"M"="m";"N"="n";"O"="o";"P"="p";"Q"="q";"R"="r";"S"="s";"T"="t";"U"="u";"V"="v";"X"="x";"Z"="z";"Y"="y";"W"="w"};
+:local ConvertUpperCase do={
+	:local alphabet {"a"="A";"b"="B";"c"="C";"d"="D";"e"="E";"f"="F";"g"="G";"h"="H";"i"="I";"j"="J";"k"="K";"l"="L";"m"="M";"n"="N";"o"="O";"p"="P";"q"="Q";"r"="R";"s"="S";"t"="T";"u"="U";"v"="V";"x"="X";"z"="Z";"y"="Y";"w"="W"};
 	:local result
 	:local character
 	:for strings from=0 to=([:len $1] - 1) do={
@@ -29,14 +29,14 @@
 }
 
 if ($params = "help") do={
-local helptext ("======== LOWERCASE COMMAND ========%0A%0A")
-local helptext ($helptext."This command will convert given text to lowercase%0A%0A")
+local helptext ("======== UPPERCASE COMMAND ========%0A%0A")
+local helptext ($helptext."This command will convert given text to uppercase%0A%0A")
 local helptext ($helptext."*USAGE:*%0A")
-local helptext ($helptext."/lowercase _<text>_%0A%0A")
+local helptext ($helptext."/uppercase _<text>_%0A%0A")
 local helptext ($helptext."*EXAMPLE*%0A")
-local helptext ($helptext."/lowercase _aNtIdIsEsTaBlIsHmEnTaRiAnIsM_%0A%0A")
+local helptext ($helptext."/uppercase _aNtIdIsEsTaBlIsHmEnTaRiAnIsM_%0A%0A")
 local helptext ($helptext."*The output should be:*%0A")
-local helptext ($helptext."antidisestablishmentarianism%0A%0A")
+local helptext ($helptext."ANTIDISESTABLISHMENTARIANISM%0A%0A")
 local helptext ($helptext."*NOTE:*%0A")
 local helptext ($helptext."> you can use many words as you want, but please dont spam this command too frequently%0A")
 local helptext ($helptext."> if possible, please dont use any punctuation mark. That will cause script doesnt work properly%0A")
@@ -44,8 +44,8 @@ $send chat=$chatid text=("$helptext") mode="Markdown"
 }
 
 if (($params != "help") and ([:typeof $params] = "str")) do={
-local outputbody ("*Here is your lowercase text:*%0A%0A")
-local lctext [$ConvertLowerCase ("$params")]
+local outputbody ("*Here is your uppercase text:*%0A%0A")
+local lctext [$ConvertUpperCase ("$params")]
 set outputbody ($outputbody."==============================%0A")
 set outputbody ($outputbody." ``` $lctext ``` %0A")
 set outputbody ($outputbody."==============================%0A")
