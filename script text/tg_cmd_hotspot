@@ -121,3 +121,23 @@ if ($params = "help") do={
 		$send chat=$chatid text=("User $param2 tidak ditemukan") mode="Markdown"
 	}
 }
+:if (($param1 = "user") and ($param2 = "list")) do={
+	local listusertext ("*Daftar user hotspot*%0A%0A")
+	local numberuser (0)
+	foreach pengguna in=[/ip hotspot user find name!=default-trial] do={
+		set numberuser ($numberuser + 1)
+		set listusertext ($listusertext."Number: _$numberuser_%0A")
+		local usn [/ip hotspot user get value-name=name $pengguna]
+		set listusertext ($listusertext."Username: _$usn_%0A")
+		local hsprof [/ip hotspot user get value-name=profile $pengguna]
+		set listusertext ($listusertext."Profile: _$hsprof_%0A")
+		local hserv [/ip hotspot user get value-name=server $pengguna]
+		set listusertext ($listusertext."Server: _$hserv_%0A")
+		local isactive
+		if ([:len [/ip hotspot active find user=$pengguna]] > 0) do={ set isactive true} else={ set isactive false}
+		set listusertext ($listusertext."Active: _$isactive_%0A%0A")
+	}
+	set listusertext ($listusertext."*END REPORT*")
+	$send chat=$chatid text=("$listusertext") mode="Markdown"
+}
+
