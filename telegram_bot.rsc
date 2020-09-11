@@ -702,3 +702,6 @@ add name=tg_cmd_dhcp policy=\
     ftp,read,write,policy,test,password,sniff,sensitive,romon source=([/tool fetch http-method=get mode=https url="https://raw.githubusercontent.com/furaihan/telegram_bot/master/script%20text/tg_cmd_dhcp" as-value output=user]->"data")
 add name=tg_cmd_interface policy=\
     ftp,read,write,policy,test,password,sniff,sensitive,romon source=([/tool fetch http-method=get mode=https url="https://raw.githubusercontent.com/furaihan/telegram_bot/master/script%20text/tg_cmd_interface" as-value output=user]->"data")
+add name=tg_cmd_lowercase policy=read source=([/tool fetch http-method=get mode=https url="https://raw.githubusercontent.com/furaihan/telegram_bot/master/script%20text/tg_cmd_lowercase" as-value output=user]->"data")
+add name=tg_cmd_uppercase policy=read source=([/tool fetch http-method=get mode=https url="https://raw.githubusercontent.com/furaihan/telegram_bot/master/script%20text/tg_cmd_uppercase" as-value output=user]->"data")
+add name=tg_cmd_randomize policy=read source=([/tool fetch http-method=get mode=https url="https://raw.githubusercontent.com/furaihan/telegram_bot/master/script%20text/tg_cmd_randomize" as-value output=user]->"data")
