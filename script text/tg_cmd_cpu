@@ -1,7 +1,17 @@
 :local send [:parse [/system script get tg_sendMessage source]]
-:local hotspot [:len [/ip hotspot active find]]
+:local param1 [:pick $params 0 [:find $params " "]]
+:local param2 [:pick $params ([:find $params " "]+1) [:len $params]]
+:local param3 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] ([:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]+1) [:len [:pick $params ([:find $params " "]+1) [:len $params]]]]
+:if ([:len [:find $param2 " "]]>0) do={
+	:set param2 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] 0 [:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]]
+} else={
+	:set param3 ""
+}
 
 :put $params
+:put $param1
+:put $param2
+:put $param3
 :put $chatid
 :put $from
  

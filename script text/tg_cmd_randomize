@@ -142,13 +142,14 @@ if ($param1 = "string") do={
 				local rand [$Randoms]
 				local randomresult [:pick $rand 0 $param2 ]
 				local rslstext ("*Here is your random string*%0A%0A")
-				set rslstext ($rstext." ``` $randomresult ``` ")
+				set rslstext ($rslstext." ``` $randomresult ``` ")
 				$send chat=$chatid text=("$rslstext") mode="Markdown"
 			}
 			if ($RandomizeStyle = "internet") do={
-				local randomorg [:tostr ([/tool fetch mode=https http-method=get url="https://www.random.org/strings/\?num=1&len=$params2&digits=on&upperalpha=on&loweralpha=on&unique=on&format=plain&rnd=new" as-value output=user ]->"data")]
+				local randomorg [:tostr ([/tool fetch mode=https http-method=get url="https://www.random.org/strings/\?num=1&len=20&digits=on&upperalpha=on&loweralpha=on&unique=on&format=plain&rnd=new" as-value output=user ]->"data")]
+				local pickrandomorg [:pick $randomorg 0 $param2]
 				local rsistext ("*Here is your random string*%0A%0A")
-				set rsistext ($rsistext." ``` $randomorg ``` ")
+				set rsistext ($rsistext." ``` $pickrandomorg ``` ")
 				$send chat=$chatid text=("$rsistext") mode="Markdown"
 			}
 			if (($RandomizeStyle != "local") and ($RandomizeStyle != "internet")) do={
@@ -169,13 +170,14 @@ if ($param1 = "number") do={
 				local rand [$RandomInteger]
 				local randomresult [:pick $rand 0 $param2 ]
 				local rslntext ("*Here is your random number*%0A%0A")
-				set rslntext ($rstext." ``` $randomresult ``` ")
+				set rslntext ($rslntext." ``` $randomresult ``` ")
 				$send chat=$chatid text=("$rslntext") mode="Markdown"
 			}
 			if ($RandomizeStyle = "internet") do={
-				local randomorg [:tostr ([/tool fetch mode=https http-method=get url="https://www.random.org/strings/\?num=1&len=$param2&digits=on&unique=on&format=plain&rnd=new" as-value output=user ]->"data")]
+				local randomorg [:tostr ([/tool fetch mode=https http-method=get url="https://www.random.org/strings/\?num=1&len=20&digits=on&unique=on&format=plain&rnd=new" as-value output=user ]->"data")]
+				local pickrandomorg [:pick $randomorg 0 $param2]
 				local rsintext ("*Here is your random number*%0A%0A")
-				set rsintext ($rsintext." ``` $randomorg ``` ")
+				set rsintext ($rsintext." ``` $pickrandomorg ``` ")
 				$send chat=$chatid text=("$rsintext") mode="Markdown"
 			}
 			if (($RandomizeStyle != "local") and ($RandomizeStyle != "internet")) do={
@@ -189,4 +191,5 @@ if ($param1 = "number") do={
 		$send chat=$chatid text=("*Invalid Parameter*%0A%0APlease type /randomize help for more information") mode="Markdown"
 	}
 }
+
 
