@@ -16,6 +16,19 @@
 :put $chatid
 :put $from
 
+:local ConvertUpperCase do={
+	:local alphabet {"a"="A";"b"="B";"c"="C";"d"="D";"e"="E";"f"="F";"g"="G";"h"="H";"i"="I";"j"="J";"k"="K";"l"="L";"m"="M";"n"="N";"o"="O";"p"="P";"q"="Q";"r"="R";"s"="S";"t"="T";"u"="U";"v"="V";"x"="X";"z"="Z";"y"="Y";"w"="W"};
+	:local result
+	:local character
+	:for strings from=0 to=([:len $1] - 1) do={
+		:local single [:pick $1 $strings]
+		:set character ($alphabet->$single)
+		:if ([:typeof $character] = "str") do={set single $character}
+		:set result ($result.$single)
+	}
+	:return $result
+}
+
 :if ($params = "help") do={
 	:local bantuan
 	:set bantuan ("*Perintah Definisi*%0A")
@@ -24,7 +37,11 @@
 	:set bantuan ($bantuan."_/definisi <kata>_%0A")
 	:set bantuan ($bantuan."Contoh: ``` /definisi hujan ```%0A%0A")
 	:set bantuan ($bantuan."*Catatan: *%0A")
-	:set bantuan ($bantuan."Fitur ini masih memiliki banyak bug, karena keterbatasan dalam penulisan skrip di RouterOS%0A")
+	:set bantuan ($bantuan.">	Fitur ini masih memiliki banyak bug, karena keterbatasan dalam penulisan skrip di RouterOS%0A")
+	:set bantuan ($bantuan.">	Silahkan ketikkan kata yang didefinisikan dalam satu kata%0A%0A")
+	:set bantuan ($bantuan."*Known Bugs:*%0A")
+	:set bantuan ($bantuan.">	Apabila definisi dari kata yang diberikan terdapat tanda baca koma (,)maka yang akan dikirim di telegram adalah seluruh kalimat sebelum tanda koma tersebut%0A")
+	:set bantuan ($bantuan.">	Tidak bisa mendefinisikan dua kata atau lebih seperti: _tanggung jawab, bumi hanguskan, bercerai berai, dll_%0A")
 	$send chat=$chatid text=("$bantuan") mode="Markdown"
 }
 
@@ -32,16 +49,23 @@
 	:do {
 		:local a ([/tool fetch mode=http http-method=get url="http://kateglo.com/api.php\?format=json&phrase=$params" as-value output=user ]->"data");
 		:local def [$gkey block="definition" key="def_text" text=$a];
+		:local sample [$gkey block="definition" key="sample" text=$a];
 		:local kat [$gkey block="kateglo" key="lex_class_name" text=$a];
 		:local pepatah [$gkey block="proverbs" key="proverb" text=$a];
+		:local pptmean [$gkey block="proverbs" key="meaning" text=$a];
 		:put $def; put $kat; put $pepatah;
+		:local paramsuppercase [$ConvertUpperCase $params]
 		:local deftext;
-		:set deftext ("* $params *%0A");
+		:set deftext ("* $paramsuppercase *%0A");
 		:set deftext ($deftext."Jenis: $kat%0A");
 		:set deftext ($deftext."Definisi: $def%0A");
-		:if ([:len $pepatah] > 0) do={ :set deftext ($deftext."Pepatah: _$pepatah_%0A")}
-		:set deftext ($deftext."Diambil dari [Kateglo](http://kateglo.com/)");
-		$send chat=$chatid text=("$deftext") mode="Markdown"
+		:if ( ($sample != "null") and ([:len $sample] > 0) ) do={ :set deftext ($deftext."Sampel: $sample%0A"); }
+		:if ([:len $pepatah] > 0) do={ :set deftext ($deftext."Pepatah: _$pepatah_ ($pptmean)%0A")}
+		:if ([:len $kat] > 0) do={
+			$send chat=$chatid text=("$deftext") mode="Markdown"
+		} else={
+			$send chat=$chatid text=("Definisi $params tidak ditemukan") mode="Markdown"
+		}
 	} on-error={
 		:local ertext ("*unknown error occurred*%0A");
 		:local ertext ($ertext."Please try again later%0A%0A");
