@@ -1,0 +1,55 @@
+:local send [:parse [/system script get tg_sendMessage source]]
+:local gkey [:parse [/system script get tg_getkey source]]
+:local param1 [:pick $params 0 [:find $params " "]]
+:local param2 [:pick $params ([:find $params " "]+1) [:len $params]]
+:local param3 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] ([:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]+1) [:len [:pick $params ([:find $params " "]+1) [:len $params]]]]
+:if ([:len [:find $param2 " "]]>0) do={
+	:set param2 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] 0 [:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]]
+} else={
+	:set param3 ""
+}
+
+:put $params
+:put $param1
+:put $param2
+:put $param3
+:put $chatid
+:put $from
+
+:if ($params = "help") do={
+	:local bantuan
+	:set bantuan ("*Perintah Definisi*%0A")
+	:set bantuan ($bantuan."Digunakan untuk mendefinisikan sebuah kata yang diberikan. Definisi diambil dari web [Kateglo](http://kateglo.com/) yang bersumber dari KBBI%0A%0A")
+	:set bantuan ($bantuan."*Penggunaan: *%0A")
+	:set bantuan ($bantuan."_/definisi <kata>_%0A")
+	:set bantuan ($bantuan."Contoh: ``` /definisi hujan ```%0A%0A")
+	:set bantuan ($bantuan."*Catatan: *%0A")
+	:set bantuan ($bantuan."Fitur ini masih memiliki banyak bug, karena keterbatasan dalam penulisan skrip di RouterOS%0A")
+	$send chat=$chatid text=("$bantuan") mode="Markdown"
+}
+
+:if ( ([:typeof [:tostr $params]] = "str") and ([:len $param1] = 1) and ($params != "help") ) do={
+	:do {
+		:local a ([/tool fetch mode=http http-method=get url="http://kateglo.com/api.php\?format=json&phrase=$params" as-value output=user ]->"data");
+		:local def [$gkey block="definition" key="def_text" text=$a];
+		:local kat [$gkey block="kateglo" key="lex_class_name" text=$a];
+		:local pepatah [$gkey block="proverbs" key="proverb" text=$a];
+		:put $def; put $kat; put $pepatah;
+		:local deftext;
+		:set deftext ("* $params *%0A");
+		:set deftext ($deftext."Jenis: $kat%0A");
+		:set deftext ($deftext."Definisi: $def%0A");
+		:if ([:len $pepatah] > 0) do={ :set deftext ($deftext."Pepatah: _$pepatah_%0A")}
+		:set deftext ($deftext."Diambil dari [Kateglo](http://kateglo.com/)");
+		$send chat=$chatid text=("$deftext") mode="Markdown"
+	} on-error={
+		:local ertext ("*unknown error occurred*%0A");
+		:local ertext ($ertext."Please try again later%0A%0A");
+		:local ertext ($ertext."_Please be advised that this tool is still have some bugs due to Mikrotik RouterOS limitation itself, you can try this again but if you keep getting an error you can try to use another word_");
+		$send chat=$chatid text=("$ertext") mode="Markdown"
+	}
+} else={
+	:if ($params != "help") do={
+		$send chat=$chatid text=("$params tidak bisa di-definisikan, silahkan ketik ``` /definisi help ``` untuk informasi lebih lanjut") mode="Markdown"
+	}
+}
