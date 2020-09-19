@@ -19,8 +19,8 @@ Kontribusi pada _repository_ ini hanya terbatas pada MikroTik Script dan Dokumen
 # Riwayat Versi
 #### 2.0 (19 September 2020)
  1. Penambahan perintah ``/dhcp lease`` untuk menunjukkan client dhcp server kita
-	2. Perbaikan perintah ``/hotspot`` apabila memodifikasi user yang tidak ada maka bot akan membalas ``user tidak ditemukan``
-	3. Penampahan perintah untuk fungsi sehari-hari ``/uppercase /lowercase /definisi /define``
+ 2. Perbaikan perintah ``/hotspot`` apabila memodifikasi user yang tidak ada maka bot akan membalas ``user tidak ditemukan``
+ 3. Penampahan perintah untuk fungsi sehari-hari ``/uppercase /lowercase /definisi /define``
 #### 1.2 (11 Agustus 2019)
  1. Perbaikan _bug_ saat _import script_ (error ``invalid default argument``)
  2. Pembaruan perintah pada hotspot:
