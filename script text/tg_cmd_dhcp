@@ -16,7 +16,7 @@
 :put $from
 
 :local getVendor false
-:if (params = "lease") do={
+:if ((params = "lease") or (params = "LEASE") or (params = "Lease")) do={
 	local GetMacVendor do={
 		:do {
 			return ([/tool fetch mode=https http-method=get url=("https://api.macvendors.com/".[:pick [:tostr $1] 0 8 ]) as-value output=user ]->"data")
@@ -46,6 +46,6 @@
 		:local server [/ip dhcp-server lease get value-name=server $lease]
 		:set text ($text."Server: $server%0A")
 	}
-	:set text ($text."========== END REPORT ==========%0A")
+	:set text ($text."=========== END REPORT ===========%0A")
 	$send chat=$chatid text=("$text") mode="Markdown"
 }
