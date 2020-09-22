@@ -40,9 +40,9 @@
 		:local khak ([/tool fetch http-header-field="content-type: application/json" url="https://api.dictionaryapi.dev/api/v2/entries/en/$params" output=user as-value ]->"data");
 		:put khak;
 		:local pron [$gkey key="audio" text=$khak];
-		:local def [$gkey key=definition block=definitions text=$khak];
-		:local cth [$gkey key=example block=definitions text=$khak];
-		:local typ [$gkey key=partOfSpeech block=meanings text=$khak];
+		:local def [$gkey block=definitions key=definition text=$khak];
+		:local cth [$gkey block=definitions key=example text=$khak];
+		:local typ [$gkey block=meanings key=partOfSpeech text=$khak];
 		:local mptri ([pick $pron ([find $pron "\""]+1) [find $pron ".mp3"]].".mp3");
 		:local defitext;
 		:set defitext ("*$[$ConvertUpperCase $params]*%0A%0A");
