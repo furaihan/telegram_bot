@@ -139,7 +139,7 @@ if ($paramsLower = "help") do={
 		$send chat=$chatid text=("User $param2 tidak ditemukan") mode="Markdown"
 	}
 }
-:if (($param1Lower = "user") and ($param2 = "list")) do={
+:if (($param1Lower = "user") and ($param2Lower = "list")) do={
 	local listusertext ("*Daftar user hotspot*%0A%0A")
 	local numberuser (0)
 	foreach pengguna in=[/ip hotspot user find name!=default-trial] do={

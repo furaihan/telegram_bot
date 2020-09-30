@@ -1,0 +1,74 @@
+:local send [:parse [/system script get tg_sendMessage source]]
+:local gkey [:parse [/system script get tg_getkey source]]
+:local param1 [:pick $params 0 [:find $params " "]]
+:local param2 [:pick $params ([:find $params " "]+1) [:len $params]]
+:local param3 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] ([:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]+1) [:len [:pick $params ([:find $params " "]+1) [:len $params]]]]
+:if ([:len [:find $param2 " "]]>0) do={
+	:set param2 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] 0 [:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]]
+} else={
+	:set param3 ""
+}
+:local privateParams $params
+:put $params
+:put $param1
+:put $param2
+:put $param3
+:put $chatid
+:put $from
+
+:local ConvertLowerCase do={
+	:local alphabet {"A"="a";"B"="b";"C"="c";"D"="d";"E"="e";"F"="f";"G"="g";"H"="h";"I"="i";"J"="j";"K"="k";"L"="l";"M"="m";"N"="n";"O"="o";"P"="p";"Q"="q";"R"="r";"S"="s";"T"="t";"U"="u";"V"="v";"X"="x";"Z"="z";"Y"="y";"W"="w"};
+	:local result
+	:local character
+	:for strings from=0 to=([:len $1] - 1) do={
+		:local single [:pick $1 $strings]
+		:set character ($alphabet->$single)
+		:if ([:typeof $character] = "str") do={set single $character}
+		:set result ($result.$single)
+	}
+	:return $result
+}
+
+:local paramsLower [$ConvertLowerCase $params];
+:put $paramsLower
+
+:local sendHelp do={
+	:local send [:parse [/system script get tg_sendMessage source]]
+	:local helpText
+	:set helpText ($helpText."Short your long url with [rel.ink](https://rel.ink/) shortener services, powered by Cloudflare%0A%0A")
+	:set helpText ($helpText." *Usage*: %0A")
+	:set helpText ($helpText."/shorten _<long-url>_%0A%0A")
+	:set helpText ($helpText." *Example*: %0A")
+	:set helpText ($helpText."/shorten _https://mikrotik.com/download_")
+	$send chatid=$chatid text=$helpText mode="Markdown"
+}
+
+:if ($paramsLower = "help") do={
+	$sendHelp
+}
+
+:if ([:pick $privateParams ([:len $privateParams]-1 )] = "/") do={
+	:set privateParams [:pick $privateParams 0 ([:len $privateParams] - 2)];
+	:put $privateParams;
+}
+:put [:len $params]
+:if (([:len $params] > 0) and ($paramsLower != "help")) do={
+	:do {
+		:local httpData ("{\"url\":\"$privateParams\"}")
+		:put $httpData
+		:local shortData ([/tool fetch http-method=post http-header-field="content-type: application/json" http-data=("$httpData") url="https://rel.ink/api/links/" output=user as-value]->"data")
+		:put $shortData
+		:local hashID [$gkey key=hashid text=$shortData]
+		:local shortUrl ("https://rel.ink/$hashID")
+		:put $shortUrl
+		:local sendThisText
+		:set sendThisText ($sendThisText."Your link is successfully shortened%0A")
+		:set sendThisText ($sendThisText."[$shortUrl]($shortUrl)%0A")
+		$send chatid=$chatid text=$sendThisText mode="Markdown"
+	} on-error={
+		$send chatid=$chatid text=("Something went wrong. Try again later or check your url")
+		$sendHelp
+	}
+} else={
+	$sendHelp
+}
