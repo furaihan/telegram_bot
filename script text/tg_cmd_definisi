@@ -9,12 +9,6 @@
 	:set param3 ""
 }
 
-:put $params
-:put $param1
-:put $param2
-:put $param3
-:put $chatid
-:put $from
 
 :local ConvertUpperCase do={
 	:local alphabet {"a"="A";"b"="B";"c"="C";"d"="D";"e"="E";"f"="F";"g"="G";"h"="H";"i"="I";"j"="J";"k"="K";"l"="L";"m"="M";"n"="N";"o"="O";"p"="P";"q"="Q";"r"="R";"s"="S";"t"="T";"u"="U";"v"="V";"x"="X";"z"="Z";"y"="Y";"w"="W"};

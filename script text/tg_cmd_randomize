@@ -1,4 +1,5 @@
 :local send [:parse [/system script get tg_sendMessage source]]
+:local tolower [:parse [/system script get func_lowercase source]]
 :local param1 [:pick $params 0 [:find $params " "]]
 :local param2 [:pick $params ([:find $params " "]+1) [:len $params]]
 :local param3 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] ([:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]+1) [:len [:pick $params ([:find $params " "]+1) [:len $params]]]]
@@ -8,29 +9,11 @@
 	:set param3 ""
 }
 
-:put $params
-:put $param1
-:put $param2
-:put $param3
-:put $chatid
-:put $from
 
-:local ConvertLowerCase do={
-	:local alphabet {"A"="a";"B"="b";"C"="c";"D"="d";"E"="e";"F"="f";"G"="g";"H"="h";"I"="i";"J"="j";"K"="k";"L"="l";"M"="m";"N"="n";"O"="o";"P"="p";"Q"="q";"R"="r";"S"="s";"T"="t";"U"="u";"V"="v";"X"="x";"Z"="z";"Y"="y";"W"="w"};
-	:local result;
-	:local character;
-	:for strings from=0 to=([:len $1] - 1) do={
-		:local single [:pick $1 $strings];
-		:set character ($alphabet->$single);
-		:if ([:typeof $character] = "str") do={set single $character}
-		:set result ($result.$single);
-	}
-	:return $result;
-}
-:local paramsLower [$ConvertLowerCase $params];
-:local param1Lower [$ConvertLowerCase $param1];
-:local param2Lower [$ConvertLowerCase $param2];
-:local param3Lower [$ConvertLowerCase $param3]
+:local paramsLower [$tolower $params];
+:local param1Lower [$tolower $param1];
+:local param2Lower [$tolower $param2];
+:local param3Lower [$tolower $param3]
 
 :local Randoms do={
 	:local hour [:pick [/system clock get time] 0 2];
@@ -69,7 +52,9 @@
 		:set utsec ($utsec + 25);
 		:set minute ($minute + 60);
 	}
-	:local string ("FbPTYV9mjUNF4JWq4y1tD6sjdak0t2m8EbvSOIJ5zSXx2zBzTdVbreMTTtYNu2n0y383CHqASakcmw3NnhAeU6szwSsSqasDaMytTnw0CEzglNhbMyfGUkHfQexNk5C0m4iICxIQmXotuYvGvbJO5XhzGHt3Xb2al4chtzNvTBnniz9RfrdqzTQHixeLh1uvHJ1xP885MLm025D6vzBNmPLWl0GX64zXbABIWudpcfhzrcl2mg11FYXHYAdi5XggVblwizY9Rt4a2Utvmi1mmhbtTX2gVntOh3jotnUOD5nB69d4bnnUGoth");
+	:local string ("FbPTYV9mjUNF4JWq4y1tD6sjdak0t2m8EbvSOIJ5zSXx2zBzTdVbreMTTtYNu2n0y383CHqASakcmw3NnhAeU6szwSsSqasDaMytTnw0CEzglNhbMyfGUkHfQexNk5C0m4iICxIQm\
+					XotuYvGvbJO5XhzGHt3Xb2al4chtzNvTBnniz9RfrdqzTQHixeLh1uvHJ1xP885MLm025D6vzBNmPLWl0GX64zXbABIWudpcfhzrcl2mg11FYXHYAdi5XggVblwizY9Rt4a2Utvmi1\
+					mmhbtTX2gVntOh3jotnUOD5nB69d4bnnUGoth");
 	:local RandomString;
 	:set RandomString ([:pick $string ($utsecx + $utmin)].[:pick $string ($utsecx + 50)].[:pick $string ($utsecx + $hour + 29)].[:pick $string ($utsecx)].[:pick $string ($utsec + 21)].[:pick $string ($second + utmin)].[:pick $string ($second + uthour + 100)].[:pick $string ($utsec + 29)].[:pick $string ($utsec + $hourx)].[:pick $string ($second + uthour + 1)].[:pick $string ($second + uthour)].[:pick $string ($secondx + $uthour)].[:pick $string ($minute + $utsec - $hour)].[:pick $string ($minute + $uthour + $secondx)].[:pick $string [:tonum ($hundred + $uthour)]].[:pick $string [:tonum ($hundred2 + $utsec)]].[:pick $string [:tonum $hundred3]].[:pick $string ($utmin + $hourx + $second)].[:pick $string ($hourx + $hour + $second)].[:pick $string ($secondx + $utsec)]);
 	:return $RandomString;
@@ -112,7 +97,9 @@
 		:set utsec ($utsec + 25);
 		:set minute ($minute + 60);
 	}
-	:local string ("857942409324079924597220765691387859683055723045203124933189298538729356872140414647102436510066373639151713513171131252244546015539855265455581089294375950366038843450537611932543918911222999679829996761162249865561639719443220390417183177772849102022571199645068346947859721422306227212493834056443900559616751");
+	:local string ("857942409324079924597220765691387859683055723045203124933189298538729356872140414647102436510066373639151713513171131252244546015539855265455\
+					5810892943759503660388434505376119325439189112229996798299967611622498655616397194432203904171831777728491020225711996450683469478597214223062\
+					27212493834056443900559616751");
 	:local RandomString;
 	:set RandomString ([:pick $string ($utsecx + $utmin)].[:pick $string ($utsecx + 50)].[:pick $string ($utsecx + $hour + 29)].[:pick $string ($utsecx)].[:pick $string ($utsec + 21)].[:pick $string ($second + utmin)].[:pick $string ($second + uthour + 100)].[:pick $string ($utsec + 29)].[:pick $string ($utsec + $hourx)].[:pick $string ($second + uthour + 1)].[:pick $string ($second + uthour)].[:pick $string ($secondx + $uthour)].[:pick $string ($minute + $utsec - $hour)].[:pick $string ($minute + $uthour + $secondx)].[:pick $string [:tonum ($hundred + $uthour)]].[:pick $string [:tonum ($hundred2 + $utsec)]].[:pick $string [:tonum $hundred3]].[:pick $string ($utmin + $hourx + $second)].[:pick $string ($hourx + $hour + $second)].[:pick $string ($secondx + $utsec)]);
 	:return $RandomString;
