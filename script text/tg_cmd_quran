@@ -3,12 +3,6 @@
 :local tolower [:parse [/system script get func_lowercase source]]
 :local param1 [:pick $params 0 [:find $params " "]]
 :local param2 [:pick $params ([:find $params " "]+1) [:len $params]]
-:local param3 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] ([:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]+1) [:len [:pick $params ([:find $params " "]+1) [:len $params]]]]
-:if ([:len [:find $param2 " "]]>0) do={
-	:set param2 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] 0 [:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]]
-} else={
-	:set param3 ""
-}
 
 #check language quran file availability
 :local fileName ("quran-lang-data.txt");
@@ -27,10 +21,17 @@
               "100"="11"; "101"="11"; "102"="8"; "103"="3"; "104"="9"; "105"="5"; "106"="4"; "107"="7"; "108"="3"; "109"="6"; "110"="3"; "111"="5"; "112"="4"; "113"="5"; "114"="6"}
 :local listLang [:toarray ("al","ar","az","en","fr","de","id")]
 :local paramsLower [$tolower $params];
+:local param1Lower [$tolower $param1];
+:local param2Lower [$tolower $param2];
 
 :local sendHelp do={
     :local send [:parse [/system script get tg_sendMessage source]]
-    :local txt ("")
+    :local txt ("get random Quran verses%0A%0A")
+    :set txt ($txt."Valid Parameter:%0A")
+    :set txt ($txt."> /quran - get random Quran verses0A")
+    :set txt ($txt."> /quran language <language-id> - change the languange0A")
+    :set txt ($txt."> /quran language list - show the list of supported languages0A")
+    :set txt ($txt."> /quran language current - show the current language0A")
     $send chat=$chatid text=$txt mode="Markdown"
 }
 
@@ -40,26 +41,34 @@
 :local dataFileName ("quran-json.txt");
 :local randSurah;
 :local randAyah;
-:if (([:len $params] < 1) and ($paramsLower != "help") and ($paramsLower != "change-language")) do={
+:if (([:len $params] < 1) and ($paramsLower != "help") and ($param1Lower != "language")) do={
     :do {:set randSurah ([/tool fetch url="https://www.random.org/integers/\?num=1&min=1&max=114&col=1&base=10&format=plain&rnd=new" output=user as-value]->"data")} on-error={
         $send chat=$chatid text=("Something went wrong, Failed to fetch random <1>") mode="Markdown"; :return -1
     }
-    :local toAyat ($ayat->[:pick $randSurah 0 ([:len $randSurah] - 1)])
+    :local randSurahCheck [:pick $randSurah 0 ([:len $randSurah] - 1)]
+    :local toAyat ($ayat->$randSurahCheck)
     :do {:set randAyah ([/tool fetch url="https://www.random.org/integers/\?num=1&min=1&max=$toAyat&col=1&base=10&format=plain&rnd=new" output=user as-value]->"data")} on-error={
         $send chat=$chatid text=("Something went wrong, Failed to fetch random <2>") mode="Markdown"; :return -2
     }
+    :local randAyahCheck [:pick $randAyah 0 ([:len $randAyah] - 1)]
     :local language [/file get $fileName contents]
-    :local uri ("https://api.banghasan.com/quran/format/json/surat/$[:pick $randSurah 0 ([:len $randSurah] - 1)]/ayat/$[[:pick $randAyah 0 ([:len $randAyah] - 1)]]/bahasa/$language")
+    :local uri ("https://api.banghasan.com/quran/format/json/surat/$randSurahCheck/ayat/$randAyahCheck/bahasa/$language")
     :do {/tool fetch dst-path=$dataFileName url=$uri} on-error={$send chat=$chatid text=("Something went wrong, Failed to fetch quran data") mode="Markdown"; :return -3}
+    :delay 500ms;
     :local jsonData [/file get $dataFileName contents]
-    
+    :local textAyah [:pick $jsonData ([:find $jsonData "teks"] + [:len "teks"] + 4) ([:len $jsonData] - 51)]
+    :local sendThisText ($randSurahCheck.":".$randAyahCheck."%0A".$textAyah)
+    $send chat=$chatid text=$sendThisText
+    /file remove $dataFileName
 } else={
-    :if (($paramsLower != "help" )and ($paramsLower != "change-language")) do={
+    :if (($paramsLower != "help" )and ($param1Lower != "language")) do={
         $sendHelp
     }
 }
 
-:if ($paramsLower = "change-language") do={
+:if ($param1Lower = "language") do={
+    :local listLangValue {"al"="albenian"; "ar"="arabic"; "az"="azerbaijani"; "en"="english"; "fr"="french"; "de"="germany"; "id"="indonesia"}
+    :if ([typeof [:find $listLang "$param2Lower"]] != "nil") do={
+        /file set
+    }
 }
-
-[:pick $jsonData ([:find $jsonData "teks"] + [:len "teks"] + 4) ([:len $jsonData] - 53)]
