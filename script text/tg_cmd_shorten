@@ -29,7 +29,7 @@
 	:set helpText ($helpText."/shorten _<long-url>_%0A%0A")
 	:set helpText ($helpText." *Example*: %0A")
 	:set helpText ($helpText."/shorten _https://mikrotik.com/download_")
-	$send chatid=$chatid text=$helpText mode="Markdown"
+	$send chat=$chatid text=$helpText mode="Markdown"
 }
 
 :if ($paramsLower = "help") do={
@@ -53,9 +53,9 @@
 		:local sendThisText
 		:set sendThisText ($sendThisText."Your link is successfully shortened%0A")
 		:set sendThisText ($sendThisText."[$shortUrl]($shortUrl)%0A")
-		$send chatid=$chatid text=$sendThisText mode="Markdown"
+		$send chat=$chatid text=$sendThisText mode="Markdown"
 	} on-error={
-		$send chatid=$chatid text=("Something went wrong. Try again later or check your url")
+		$send chat=$chatid text=("Something went wrong. Try again later or check your url")
 		$sendHelp
 	}
 } else={
