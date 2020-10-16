@@ -1,4 +1,4 @@
-:local send [:parse [/system script get tg_sendMessage source]]
+:local send [:parse [/system/script/get tg_sendMessage source]]
 :put $params
 :put $chatid
 :put $from

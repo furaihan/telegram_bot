@@ -1,10 +1,10 @@
 :global TGLASTMSGID
 :global TGLASTUPDID
 
-:local fconfig [:parse [/system script get tg_config source]]
-:local http [:parse [/system script get func_fetch source]]
-:local gkey [:parse [/system script get tg_getkey source]]
-:local send [:parse [/system script get tg_sendMessage source]]
+:local fconfig [:parse [/system/script/get tg_config source]]
+:local http [:parse [/system/script/get func_fetch source]]
+:local gkey [:parse [/system/script/get tg_getkey source]]
+:local send [:parse [/system/script/get tg_sendMessage source]]
 
 :local cfg [$fconfig]
 :local trusted [:toarray ($cfg->"trusted")]
@@ -34,7 +34,7 @@
 }
 :put "Finished to read updates."
 
-:local content [/file get [/file find name=$file] contents]
+:local content [/file/get [/file/find name=$file] contents]
 
 :local msgid [$gkey key="message_id" text=$content]
 :if ($msgid="") do={ 
@@ -102,5 +102,5 @@
 :global TGLASTCMD $cmd
 
 :put "Try to invoke external script tg_cmd_$cmd"
-:local script [:parse [/system script get "tg_cmd_$cmd" source]]
+:local script [:parse [/system/script/get "tg_cmd_$cmd" source]]
 $script params=$params chatid=$chatid from=$name

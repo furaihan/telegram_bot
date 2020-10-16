@@ -1,4 +1,5 @@
-:local send [:parse [/system script get tg_sendMessage source]]
+:local send [:parse [/system/script/get tg_sendMessage source]]
+:local tolower [:parse [/system/script/get func_lowercase source]]
 :put $params
 :put $chatid
 :put $from
@@ -7,9 +8,9 @@
 
 :local ddns;
 
-:set public [/ip cloud get public-address];
+:set public [/ip/cloud/get public-address];
 
-:set ddns [/ip cloud get dns-name];
+:set ddns [/ip/cloud/get dns-name];
 
 :local text "DDNS : $ddns : IP Public : $public"
 

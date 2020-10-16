@@ -1,4 +1,4 @@
-:local fconfig [:parse [/system script get tg_config source]]
+:local fconfig [:parse [/system/script/get tg_config source]]
 
 :local cfg [$fconfig]
 :local chatID ($cfg->"defaultChatID")
@@ -13,4 +13,4 @@
 :local file ($tgStorage."tg_get_updates.txt")
 :local logfile ($tgStorage."tg_fetch_log.txt")
 
-/tool fetch url=$url keep-result=no
+/tool/fetch url=$url keep-result=no

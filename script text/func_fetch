@@ -57,7 +57,7 @@
  :set $cnt ($cnt+1)
  #:put "$cnt -> $FETCHRESULT"
 }
-:local content [/file get [find name=$res] content]
+:local content [/file/get [find name=$res] content]
 #:put $content
 if ($content~"finished") do={:return "success"}
 :return $FETCHRESULT

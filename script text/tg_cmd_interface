@@ -1,4 +1,4 @@
-:local send [:parse [/system script get tg_sendMessage source]]
+:local send [:parse [/system/script/get tg_sendMessage source]]
 :local param1 [:pick $params 0 [:find $params " "]]
 :local param2 [:pick $params ([:find $params " "]+1) [:len $params]]
 :local param3 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] ([:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]+1) [:len [:pick $params ([:find $params " "]+1) [:len $params]]]]
@@ -16,31 +16,31 @@
 :put $from
 
 :if ($params="show") do={
-	:local output "Router ID:* $[/system identity get name] * %0A%0A"
+	:local output "Router ID:* $[/system/identity/get name] * %0A%0A"
 	:local eth01status
 	:local eth03status
 	:local eth04status
 	:local eth05status
 
-	:if ([/interface ethernet get eth01-router running]=true) do={
+	:if ([/interface/ethernet/get eth01-router running]=true) do={
 		:set eth01status ("Internet is *CONNECTED*%0A")
 	} else={
 		:set eth01status ("Internet is *DISCONNECTED*%0A")
 	}
 
-	:if ([/interface ethernet get eth03-lantai-1 running]=true) do={
+	:if ([/interface/ethernet/get eth03-lantai-1 running]=true) do={
 		:set eth03status ("Lantai 1 is *CONNECTED*%0A")
 	} else={
 		:set eth03status ("Lantai 1 is *DISCONNECTED*%0A")
 	}
 
-	:if ([/interface ethernet get eth04-lantai-2 running]=true) do={
+	:if ([/interface/ethernet/get eth04-lantai-2 running]=true) do={
 		:set eth04status ("Lantai 2 is *CONNECTED*%0A")
 	} else={
 		:set eth04status ("Lantai 2 is *DISCONNECTED*%0A")
 	}
 
-	:if ([/interface ethernet get eth05-configurator running]=true) do={
+	:if ([/interface/ethernet/get eth05-configurator running]=true) do={
 		:set eth05status ("Config is *CONNECTED*%0A")
 	} else={
 		:set eth05status ("Config is *DISCONNECTED*%0A")
@@ -51,14 +51,14 @@
 :if (($param1="show") and ($param2="all")) do={
 	local status 
 	local name
-	foreach i in=[interface find] do={
+	foreach i in=[/interface/find] do={
 		set status ($status,[/interface get value-name=running $i])
 		set name ($name,[/interface get value-name=name $i])
 	}
 	put $status
 	put $name
 	local text
-	for e from=0 to=([:len [interface find]] - 1) do={
+	for e from=0 to=([:len [/interface/find]] - 1) do={
 		local change {"true"="Connected";"false"="Disconnected"}
 		local newstatus ($change->[:pick $status $e])
 		local before ("%0AInterface ".[:pick $name $e]." - Status: ".$newstatus)

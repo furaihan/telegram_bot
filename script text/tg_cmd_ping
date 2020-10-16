@@ -1,4 +1,4 @@
-:local send [:parse [/system script get tg_sendMessage source]]
+:local send [:parse [/system/script/get tg_sendMessage source]]
 :local param1 [:pick $params 0 [:find $params " "]]
 :local param2 [:pick $params ([:find $params " "]+1) [:len $params]]
 
@@ -13,9 +13,9 @@
 :local avgRtt;
 :local pin
 :local pout
-:local datetime "$[/system clock get date] $[/system clock get time]"
+:local datetime "$[/system/clock/get date] $[/system/clock/get time]"
 #Ping it real good
-/tool flood-ping $param2 count=10 do={
+/tool/flood-ping $param2 count=10 do={
   
 :if ($sent = 10) do={
     
@@ -34,7 +34,7 @@
 
 :log info $logmsg
 
-:local text "Router ID:* $[/system identity get name] * %0A\
+:local text "Router ID:* $[/system/identity/get name] * %0A\
 Date : _$datetime_%0A\
 IP: _$param2_%0A\
 Result:%0A_$logmsg_"
@@ -45,9 +45,9 @@ $send chat=$chatid text=$text mode="Markdown"
 :local avgRtt;
 :local pin
 :local pout
-:local datetime "$[/system clock get date] $[/system clock get time]"
+:local datetime "$[/system/clock/get date] $[/system/clock/get time]"
 #Ping it real good
-/tool flood-ping 8.8.8.8 count=10 do={
+/tool/flood-ping 8.8.8.8 count=10 do={
   
 :if ($sent = 10) do={
     
@@ -66,7 +66,7 @@ $send chat=$chatid text=$text mode="Markdown"
 
 :log info $logmsg
 
-:local text "Router ID:* $[/system identity get name] * %0A\
+:local text "Router ID:* $[/system/identity/get name] * %0A\
 Date : _$datetime_%0A\
 IP: _8.8.8.8_%0A\
 Result:%0A_$logmsg_"
