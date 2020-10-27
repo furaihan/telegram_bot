@@ -1,75 +1,61 @@
 :local send [:parse [/system script get tg_sendMessage source]]
+:local tolower [:parse [/system script get func_lowercase source]]
 :local param1 [:pick $params 0 [:find $params " "]]
 :local param2 [:pick $params ([:find $params " "]+1) [:len $params]]
-
-:put $params
-:put $param1
-:put $param2
-:put $chatid
-:put $from
-
-:if ($param1="to") do={
-#Ping Variables
-:local avgRtt;
-:local pin
-:local pout
-:local datetime "$[/system clock get date] $[/system clock get time]"
-#Ping it real good
-/tool flood-ping $param2 count=10 do={
-  
-:if ($sent = 10) do={
-    
-:set avgRtt $"avg-rtt"
-    
-:set pout $sent
-    
-:set pin $received
-  }
-
-}
-
-:local ploss (100 - (($pin * 100) / $pout))
-
-:local logmsg ("Ping Average for $param2 - ".[:tostr $avgRtt]."ms - packet loss: ".[:tostr $ploss]."%")
-
-:log info $logmsg
-
-:local text "Router ID:* $[/system identity get name] * %0A\
-Date : _$datetime_%0A\
-IP: _$param2_%0A\
-Result:%0A_$logmsg_"
-$send chat=$chatid text=$text mode="Markdown"
-:return true
+:local param3 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] ([:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]+1) [:len [:pick $params ([:find $params " "]+1) [:len $params]]]]
+:if ([:len [:find $param2 " "]]>0) do={
+	:set param2 [:pick [:pick $params ([:find $params " "]+1) [:len $params]] 0 [:find [:pick $params ([:find $params " "]+1) [:len $params]] " "]]
 } else={
+	:set param3 ""
+}
+
+:local paramsLower [$tolower $params]
+:local param1Lower [$tolower $param1]
+:local address 8.8.8.8
+:local resolve
+
+:if ($param1Lower="to") do={
+  :if ([:typeof [:toip $param2]] = "ip") do={
+    :set address $param2;
+  } else={
+    :do {
+      :set resolve [:resolve $param2];
+    } on-error={:put "ignore"}
+    :if ([:typeof $resolve] = "ip") do={
+      :set address $resolve;
+    }
+  }
+} else={
+  :if ([:typeof [:toip $params]] = "ip") do={
+    :set address $params;
+  } else={
+    :do {
+      :set resolve [:resolve $params];
+    } on-error={:put "ignore"}
+    :if ([:typeof $resolve] = "ip") do={
+      :set address $resolve;
+    }
+  }
+}
 #Ping Variables
 :local avgRtt;
 :local pin
 :local pout
 :local datetime "$[/system clock get date] $[/system clock get time]"
 #Ping it real good
-/tool flood-ping 8.8.8.8 count=10 do={
-  
-:if ($sent = 10) do={
-    
-:set avgRtt $"avg-rtt"
-    
-:set pout $sent
-    
-:set pin $received
+/tool flood-ping $address count=10 do={
+  :if ($sent = 10) do={ 
+    :set avgRtt $"avg-rtt" 
+    :set pout $sent
+    :set pin $received
   }
-
 }
 
 :local ploss (100 - (($pin * 100) / $pout))
-
-:local logmsg ("Ping Average for 8.8.8.8 - ".[:tostr $avgRtt]."ms - packet loss: ".[:tostr $ploss]."%")
-
+:local logmsg ("Ping Average for $address - ".[:tostr $avgRtt]."ms - packet loss: ".[:tostr $ploss]."%")
 :log info $logmsg
-
 :local text "Router ID:* $[/system identity get name] * %0A\
 Date : _$datetime_%0A\
-IP: _8.8.8.8_%0A\
+IP: _$address_%0A\
 Result:%0A_$logmsg_"
 $send chat=$chatid text=$text mode="Markdown"
-:return true
-}
